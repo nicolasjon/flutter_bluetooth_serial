@@ -589,7 +589,14 @@ public class FlutterBluetoothSerialPlugin implements FlutterPlugin, ActivityAwar
 
                 case "isOn":
                 case "isEnabled":
-                    result.success(bluetoothAdapter.isEnabled());
+                    ensurePermissions(granted -> {
+                        if (!granted) {
+                            result.error("no_permissions", "Enabling bluetooth requires bluetooth permission", null);
+                            return;
+                        }
+
+                        result.success(bluetoothAdapter.isEnabled());
+                    });
                     break;
 
                 case "openSettings":
